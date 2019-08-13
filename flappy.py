@@ -1,10 +1,15 @@
 from itertools import cycle
 import random
 import sys
+from threading import Thread
 
 import pygame
 from pygame.locals import *
+from voiceController import q, get_current_note
 
+t = Thread(target=get_current_note)
+t.daemon = True
+t.start()
 
 FPS = 20
 SCREENWIDTH  = 288
@@ -215,6 +220,14 @@ def mainGame(movementInfo):
 
 
     while True:
+        if not q.empty():
+            b = q.get()
+            print("Input Value: ", b["Pitch"])
+            if int(b["Pitch"]) > 1000:
+                if playery > -2 * IMAGES['player'][0].get_height():
+                        playerVelY = playerFlapAcc
+                        playerFlapped = True
+                        SOUNDS['wing'].play()
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
