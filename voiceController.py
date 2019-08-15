@@ -5,7 +5,7 @@ import pyaudio
 import time
 import argparse
 
-import queue
+from collections import deque
 
 import music21  # yes! new favorite library
 
@@ -37,7 +37,7 @@ pDetection = aubio.pitch("default", 2048, 2048//2, 44100)
 pDetection.set_unit("Hz")
 pDetection.set_silence(-20)
 
-q = queue.Queue()
+q = deque(maxlen=5)
 
 
 def get_current_note(volume_thresh=0.01, printOut=False):
@@ -67,7 +67,7 @@ def get_current_note(volume_thresh=0.01, printOut=False):
             print(current_pitch)
         else:
             current = current_pitch.nameWithOctave
-            q.put({'Note': current, 'Cents': current_pitch.microtone.cents, 'Pitch': pitch})
+            q.append({'Note': current, 'Cents': current_pitch.microtone.cents, 'Pitch': pitch})
 
 if __name__ == '__main__':
     get_current_note(volume_thresh=0.001, printOut=False)

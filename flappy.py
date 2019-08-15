@@ -220,12 +220,11 @@ def mainGame(movementInfo):
 
 
     while True:
-        if not q.empty():
-            b = q.get()
-            print("Input Value: ", b["Pitch"])
-            if int(b["Pitch"]) > 1000:
+        if q:
+            b = int(q.popleft()['Pitch'])
+            if b > 50:
                 if playery > -2 * IMAGES['player'][0].get_height():
-                        playerVelY = playerFlapAcc
+                        playerVelY = playerFlapAcc*b*(1/400)
                         playerFlapped = True
                         SOUNDS['wing'].play()
         for event in pygame.event.get():
